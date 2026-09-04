@@ -42,6 +42,8 @@ main {
 	opacity: 0;
 	visibility: hidden;
 	z-index: 9999;
+	background: var(--info-bg, #fff);   /* set per open from the Total palette */
+	color: var(--info-fg, #000);
 }
 .email-select {
 	pointer-events: none;
@@ -61,7 +63,7 @@ main {
 	font-size: 1.05em;
 	letter-spacing: 0.08em;
 	line-height: 1.9;
-	color: #000;
+	color: inherit;
 	width: 60%;
 }
 #infoblurb p strong {

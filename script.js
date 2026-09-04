@@ -250,7 +250,27 @@
 	var fiveclock = document.getElementById('clocksflex');
 	var except = document.getElementById('except');
 
+	// New Order "Total" palette; text colour chosen by luminance
+	var TOTAL = ['#e6007e', '#e30613', '#ffed00', '#009640', '#00a0e9', '#2e3192', '#000000'];
+	var lastColour = -1;
+	function luminance(hex) {
+		var c = [1, 3, 5].map(function (i) {
+			var v = parseInt(hex.substr(i, 2), 16) / 255;
+			return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+		});
+		return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+	}
+	function paintInfo() {
+		var i;
+		do { i = Math.floor(Math.random() * TOTAL.length); } while (i === lastColour);
+		lastColour = i;
+		var bg = TOTAL[i];
+		fullScreenDiv.style.setProperty('--info-bg', bg);
+		fullScreenDiv.style.setProperty('--info-fg', luminance(bg) > 0.35 ? '#000' : '#fff');
+	}
 	function toggle() {
+		var opening = !fullScreenDiv.classList.contains('active');
+		if (opening) paintInfo();
 		fullScreenDiv.classList.toggle('active');
 		fiveclock.classList.toggle('active');
 	}
@@ -262,4 +282,48 @@
 	}
 	fullScreenDiv.addEventListener('click', toggle);
 	except.addEventListener('click', function (ev) { ev.stopPropagation(); }, false);
+
+	// ---------- live favicon: SBB-style face showing the visitor's local time ----------
+	(function () {
+		var link = document.getElementById('favicon');
+		if (!link || !document.createElement('canvas').getContext) return;
+		var S = 64, c = S / 2, canvas = document.createElement('canvas');
+		canvas.width = canvas.height = S;
+		var ctx = canvas.getContext('2d');
+		var lastKey = '';
+		function draw() {
+			var now = new Date();
+			var key = now.getHours() + ':' + now.getMinutes();
+			if (key === lastKey) return;
+			lastKey = key;
+			ctx.clearRect(0, 0, S, S);
+			// rim + dial
+			ctx.beginPath(); ctx.arc(c, c, c - 1, 0, Math.PI * 2);
+			ctx.fillStyle = '#9a9a9a'; ctx.fill();
+			ctx.beginPath(); ctx.arc(c, c, c - 5, 0, Math.PI * 2);
+			ctx.fillStyle = '#fff'; ctx.fill();
+			// hour lugs
+			ctx.fillStyle = '#111';
+			for (var i = 0; i < 12; i++) {
+				ctx.save(); ctx.translate(c, c); ctx.rotate(i * Math.PI / 6);
+				ctx.fillRect(-2, -(c - 8), 4, 8);
+				ctx.restore();
+			}
+			// hands
+			var h = now.getHours() % 12 + now.getMinutes() / 60, m = now.getMinutes();
+			function hand(angle, len, w, tail) {
+				ctx.save(); ctx.translate(c, c); ctx.rotate(angle);
+				ctx.fillRect(-w / 2, -len, w, len + tail);
+				ctx.restore();
+			}
+			hand(h * Math.PI / 6, c - 16, 6, 6);
+			hand(m * Math.PI / 30, c - 9, 4, 7);
+			// red disc, as on the seconds hand, parked at 12
+			ctx.fillStyle = '#eb0000';
+			ctx.beginPath(); ctx.arc(c, 14, 4.5, 0, Math.PI * 2); ctx.fill();
+			link.href = canvas.toDataURL('image/png');
+		}
+		draw();
+		setInterval(draw, 5000);
+	})();
 })();
