@@ -77,15 +77,27 @@
 				'<stop offset="0.8"  stop-color="#fbfbf9"/>' +
 				'<stop offset="1"    stop-color="#e9e9e6"/>' +
 			'</radialGradient>' +
-			// glass: soft glare top-left, faint dome shading at the edge
-			'<linearGradient id="' + uid + '-glare" x1="0" y1="0" x2="0.5" y2="1">' +
-				'<stop offset="0"   stop-color="#fff" stop-opacity="0.5"/>' +
-				'<stop offset="0.55" stop-color="#fff" stop-opacity="0.1"/>' +
-				'<stop offset="1"   stop-color="#fff" stop-opacity="0"/>' +
+			// glass: main domed glare top-left, a thin counter-reflection bottom-right,
+			// and a faint darkening at the rim so the crystal reads as convex
+			'<linearGradient id="' + uid + '-glare" x1="0" y1="0" x2="0.55" y2="1">' +
+				'<stop offset="0"    stop-color="#fff" stop-opacity="0.72"/>' +
+				'<stop offset="0.45" stop-color="#fff" stop-opacity="0.22"/>' +
+				'<stop offset="1"    stop-color="#fff" stop-opacity="0"/>' +
+			'</linearGradient>' +
+			'<linearGradient id="' + uid + '-glare2" x1="1" y1="1" x2="0.4" y2="0">' +
+				'<stop offset="0"    stop-color="#fff" stop-opacity="0.34"/>' +
+				'<stop offset="0.5"  stop-color="#fff" stop-opacity="0.06"/>' +
+				'<stop offset="1"    stop-color="#fff" stop-opacity="0"/>' +
 			'</linearGradient>' +
 			'<radialGradient id="' + uid + '-dome" cx="0.5" cy="0.5" r="0.5">' +
-				'<stop offset="0.82" stop-color="#000" stop-opacity="0"/>' +
-				'<stop offset="1"    stop-color="#000" stop-opacity="0.16"/>' +
+				'<stop offset="0.7"  stop-color="#000" stop-opacity="0"/>' +
+				'<stop offset="0.93" stop-color="#000" stop-opacity="0.09"/>' +
+				'<stop offset="1"    stop-color="#000" stop-opacity="0.24"/>' +
+			'</radialGradient>' +
+			'<radialGradient id="' + uid + '-glassEdge" cx="0.5" cy="0.5" r="0.5">' +
+				'<stop offset="0.9"  stop-color="#fff" stop-opacity="0"/>' +
+				'<stop offset="0.97" stop-color="#fff" stop-opacity="0.35"/>' +
+				'<stop offset="1"    stop-color="#fff" stop-opacity="0.7"/>' +
 			'</radialGradient>' +
 			'<clipPath id="' + uid + '-dialClip"><circle cx="' + CX + '" cy="' + CY + '" r="' + dialR + '"/></clipPath>' +
 			// brushed steel plaque, fixed highlight
@@ -141,10 +153,13 @@
 		// ---- glass ----
 		'<g clip-path="url(#' + uid + '-dialClip)" pointer-events="none">' +
 			'<circle cx="' + CX + '" cy="' + CY + '" r="' + dialR + '" fill="url(#' + uid + '-dome)"/>' +
-			'<ellipse cx="' + f(CX - dialR * 0.28) + '" cy="' + f(CY - dialR * 0.42) + '" rx="' + f(dialR * 0.78) + '" ry="' + f(dialR * 0.42) +
-				'" transform="rotate(-30 ' + f(CX - dialR * 0.28) + ' ' + f(CY - dialR * 0.42) + ')" fill="url(#' + uid + '-glare)"/>' +
+			'<ellipse cx="' + f(CX - dialR * 0.30) + '" cy="' + f(CY - dialR * 0.40) + '" rx="' + f(dialR * 0.86) + '" ry="' + f(dialR * 0.50) +
+				'" transform="rotate(-32 ' + f(CX - dialR * 0.30) + ' ' + f(CY - dialR * 0.40) + ')" fill="url(#' + uid + '-glare)"/>' +
+			'<ellipse cx="' + f(CX + dialR * 0.42) + '" cy="' + f(CY + dialR * 0.52) + '" rx="' + f(dialR * 0.72) + '" ry="' + f(dialR * 0.22) +
+				'" transform="rotate(-32 ' + f(CX + dialR * 0.42) + ' ' + f(CY + dialR * 0.52) + ')" fill="url(#' + uid + '-glare2)"/>' +
+			'<circle cx="' + CX + '" cy="' + CY + '" r="' + dialR + '" fill="url(#' + uid + '-glassEdge)"/>' +
 		'</g>' +
-		'<circle cx="' + CX + '" cy="' + CY + '" r="' + (dialR - 0.5) + '" fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="1.2"/>' +
+		'<circle cx="' + CX + '" cy="' + CY + '" r="' + (dialR - 0.6) + '" fill="none" stroke="#fff" stroke-opacity="0.8" stroke-width="1.4"/>' +
 
 		// ---- plain silver plaque, flat on the wall ----
 		'<g class="plaque">' +
